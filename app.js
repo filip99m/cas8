@@ -1,5 +1,7 @@
 //JQuery()
 $(document).ready(function(){
+    $("#advice_table").hide();  
+    $("#loading").hide();
     //$("#div1").html("Hello from jQuery....");
     $("button").click(() => {
         //$("#div1").append('<button>Dodatno dugme</button>')
@@ -10,9 +12,9 @@ $(document).ready(function(){
         callAPI();
     })
 
-    // $("button").on('mouseover', () => {
+    //$("button").on('mouseover', () => {
     //     alert('Klik na dugme')
-    // })
+    //})
 
     //$("button").trigger('mouseover')
     // $("li:not(.klasa1)")
@@ -37,3 +39,33 @@ function callAPI(){
     xhttp.send();
 };
 
+//jQuery AJAX
+
+function searchAdvice(){
+
+    $("#loadig").show();
+    $('#advice_table_body').html("");
+
+    let term = $("#search_term_input").val();
+    if(term.length == 0) return;
+
+    $.ajax({
+        type: "GET",
+        url: "https://api.adviceslip.com/advice/search/"+term,
+        success: (response) => {
+           let response_json = JSON.parse(response);
+           response_json.slips.forEach(function(advice){
+                $("#advice_table_body").append(
+                    `
+                        <tr>
+                            <td>${advice.id}</td>
+                            <td>${advice.advice}</td>
+                        </tr>
+                    `
+                )
+           });
+           $("#advice_table").show();
+           $("#loading").hide();
+        }
+    });
+}
